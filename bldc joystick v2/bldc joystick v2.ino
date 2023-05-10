@@ -85,7 +85,7 @@ int st=0;
   ESC2.write(val);
   }
 
- if (potValueLY >(1023/2))
+ if (potValueLY >((1023/2)+10))
   {
      digitalWrite(12,HIGH);
   int val=myMotor1.spin_motor(potValueLY);
