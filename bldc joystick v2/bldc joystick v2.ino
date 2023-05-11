@@ -6,6 +6,10 @@
   Servo ESC4;
   Servo ESC5;
   Servo gripper;
+
+ int gripperstate;
+ int gripperopen=0;
+ int gripperclose=180;
     
 
 class Motor {
@@ -47,8 +51,11 @@ Motor myMotor1;
 
 
 void setup() {
+
   Serial.begin(9600);
   myMotor1.setup();
+  pinMode(2,INPUT_PULLUP);
+  gripper.write(gripperopen);
 }
 
 void loop() {
@@ -60,18 +67,38 @@ int st=0;
   int potValueLY =analogRead(A0);  // reads the value of the potentiometer (value between 0 and 1023):::: +y direction left side 
   int potValueRY =analogRead(A2);  // reads the value of the potentiometer (value between 0 and 1023):::: +y direction right side
   int potValueRX =analogRead(A3);
+  int buttonvalue=digitalRead(2);
+
+  if(buttonvalue==LOW)
+  {
+    if(gripperstate==0)
+    {
+      gripper.write(gripperopen);
+      gripperstate=1;
+
+    }
+
+     else if(gripperstate==1)
+    {
+      gripper.write(gripperclose);
+      gripperstate=0;
+
+    }
+
+    
+  }
+
+ 
 
   
  if (potValueRY  > 1000)
   {
 
     ESC1.write(0);
-  ESC2.write(0);
+    ESC2.write(0);
     ESC3.write(0);
-  ESC4.write(0);
+    ESC4.write(0);
     ESC5.write(0);
-  
-
   }
 
  //Joystick Left 
@@ -87,9 +114,9 @@ int st=0;
 
  if (potValueLY >((1023/2)+10))
   {
-     digitalWrite(12,HIGH);
-  int val=myMotor1.spin_motor(potValueLY);
-  ESC3.write(val);
+    digitalWrite(12,HIGH);
+    int val=myMotor1.spin_motor(potValueLY);
+    ESC3.write(val);
   }
 
   //Joystick Right
@@ -102,10 +129,10 @@ int st=0;
 
   if (potValueRY  <(1023/2)-10) //+y
   {
-     digitalWrite(12,HIGH);
-  int val=myMotor1.spin_motor(potValueRY);
-  ESC4.write(val);
-  ESC5.write(val);
+    digitalWrite(12,HIGH);
+    int val=myMotor1.spin_motor(potValueRY);
+    ESC4.write(val);
+    ESC5.write(val);
   }
 
  
@@ -117,16 +144,17 @@ int st=0;
 
   if (potValueRX > (1023/2))
   {
-     digitalWrite(12,HIGH);
-  int val=myMotor1.spin_motor(potValueRX);
-  ESC5.write(val);
+    digitalWrite(12,HIGH);
+    int val=myMotor1.spin_motor(potValueRX);
+    ESC5.write(val);
   }
 //+x
 if (potValueRX <(1023/2))
   {
-     digitalWrite(12,HIGH);
-  int val=myMotor1.spin_motor(potValueRX);
-  ESC4.write(val);
+    digitalWrite(12,HIGH);
+    int val=myMotor1.spin_motor(potValueRX);
+    ESC4.write(val);
   }
 
 }
+
